@@ -8,15 +8,20 @@ contract TaskCrud {
         string description;
         bool completed;
     }
-
     Task[] tasks;
     uint256 nextId; // default value 0, add public to see the value
 
     event NewTask(uint256 id, string name, string description);
     event TaskDeleted(uint256 id);
     event TaskUpdated(uint256 id, string name, string description);
-    event TaskCompleted(uint256 id, string name, string description);
+    event NewTaskStatus(
+        uint256 id,
+        string name,
+        string description,
+        bool completed
+    );
 
+    //create a task with a name and description
     function createTask(string memory _name, string memory _description)
         public
     {
@@ -25,6 +30,7 @@ contract TaskCrud {
         nextId++;
     }
 
+    //helper internal function
     function findIndex(uint256 _id) internal view returns (uint256) {
         for (uint256 i = 0; i < tasks.length; i++) {
             if (tasks[i].id == _id) {
@@ -34,6 +40,7 @@ contract TaskCrud {
         revert("Task not found");
     }
 
+    //update a task with a certain id, changing the name and description
     function updateTask(
         uint256 _id,
         string memory _name,
@@ -45,6 +52,7 @@ contract TaskCrud {
         emit TaskUpdated(_id, _name, _description);
     }
 
+    //read a task with a certain id
     function readTask(uint256 _id)
         public
         view
@@ -58,23 +66,24 @@ contract TaskCrud {
         return (tasks[index].id, tasks[index].name, tasks[index].description);
     }
 
+    //delete a task with a certain id
     function deleteTask(uint256 _id) public {
         uint256 index = findIndex(_id);
         delete tasks[index];
         emit TaskDeleted(_id);
     }
 
+    //mark a task with a certain id as completed
     function completeTask(uint256 _id) public {
         uint256 index = findIndex(_id);
         bool alreadyCompleted = tasks[index].completed;
         //if the task is already completed, this function will set "completed" to false.
         tasks[index].completed = !alreadyCompleted;
-        if (!alreadyCompleted) {
-            emit TaskCompleted(
-                tasks[index].id,
-                tasks[index].name,
-                tasks[index].description
-            );
-        }
+        emit NewTaskStatus(
+            tasks[index].id,
+            tasks[index].name,
+            tasks[index].description,
+            !alreadyCompleted
+        );
     }
 }
