@@ -53,17 +53,9 @@ contract TaskCrud {
     }
 
     //read a task with a certain id
-    function readTask(uint256 _id)
-        public
-        view
-        returns (
-            uint256,
-            string memory,
-            string memory
-        )
-    {
+    function readTask(uint256 _id) public view returns (Task memory) {
         uint256 index = findIndex(_id);
-        return (tasks[index].id, tasks[index].name, tasks[index].description);
+        return (tasks[index]);
     }
 
     //delete a task with a certain id
