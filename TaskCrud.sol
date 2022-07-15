@@ -91,10 +91,4 @@ contract TaskCrud {
     function getTasks() public view returns (Task[] memory) {
         return tasks;
     }
-
-    //get task with a certain id
-    function getTasksById(uint256 _id) public view returns (Task memory) {
-        uint256 index = findIndex(_id);
-        return tasks[index];
-    }
 }
